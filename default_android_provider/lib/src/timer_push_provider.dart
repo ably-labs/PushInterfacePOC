@@ -1,5 +1,4 @@
 import 'package:flutter/src/services/platform_channel.dart';
-import 'package:push_provider/ably_compatible_message.dart';
 import 'package:push_provider/push_provider.dart';
 
 class TimerPushProvider extends PushProvider{

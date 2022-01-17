@@ -13,7 +13,7 @@ class DefaultAndroidProvider extends PushProvider{
   static const EventChannel _pushChannel =
       EventChannel('default_android_provider_event');
 
-  static final TimerPushProvider _timerPushProvider = TimerPushProvider(_pushChannel);
+  static final TimerPushProvider timerPushProvider = TimerPushProvider(_pushChannel);
 
   static Future<String?> get platformVersion async {
     final String? version = await _channel.invokeMethod('getPlatformVersion');
@@ -22,7 +22,7 @@ class DefaultAndroidProvider extends PushProvider{
 
   @override
   Stream<AblyCompatibleMessage> messageStream() {
-    return _timerPushProvider.messageStream();
+    return timerPushProvider.messageStream();
   }
 
 }

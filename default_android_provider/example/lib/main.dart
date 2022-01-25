@@ -50,6 +50,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
@@ -59,9 +60,15 @@ class _MyAppState extends State<MyApp> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 AblyCompatibleMessage ablyMessage =  snapshot.data as AblyCompatibleMessage;
-                return Text(ablyMessage.message);
+                return Text(
+                  ablyMessage.message,
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                );
               }
-              return Text('No data');
+              return Text(
+                "No puah message",
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              );
             },
           )
 

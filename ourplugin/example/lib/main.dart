@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:ourplugin/ourplugin.dart';
+import 'package:default_android_provider/default_android_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,6 +19,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   PushApi _pushApi = PushApi();
+  Ourplugin _ourplugin = Ourplugin.fromProvider(DefaultAndroidProvider());
   @override
   void initState() {
     super.initState();
@@ -58,7 +60,23 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n push message {}'),
+            child:  StreamBuilder(
+              stream: Ourplugin(DefaultAndroidProvider).messageStream(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  AblyCompatibleMessage ablyMessage =  snapshot.data as AblyCompatibleMessage;
+                  return Text(
+                    ablyMessage.message,
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  );
+                }
+                return Text(
+                  "No puah message",
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                );
+              },
+            )
+
         ),
       ),
     );

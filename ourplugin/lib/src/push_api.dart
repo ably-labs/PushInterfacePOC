@@ -8,10 +8,5 @@ class PushApi{
   PushApi(this.pushStream, this.pluginStream){
     pushStream = pluginStream.map((acMessage) => 'Received ${acMessage.message}');
   }
-  Stream<String> processStream(Stream<AblyCompatibleMessage> stream){
-    //this map function would act as a transformer between the stream of
-    // messages and the stream of a more compalicated type
-    return stream.map((acMessage) => acMessage.message);
-  }
 
 }

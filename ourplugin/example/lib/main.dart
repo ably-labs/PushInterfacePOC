@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:ourplugin/ourplugin.dart';
 import 'package:default_android_provider/default_android_provider.dart';
 
@@ -17,9 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  PushApi _pushApi = PushApi();
-  Ourplugin _ourplugin = Ourplugin.fromProvider(DefaultAndroidProvider());
+  late Ourplugin _ourplugin;
   @override
   void initState() {
     super.initState();
@@ -28,27 +25,7 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
-    String pushMessage;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await Ourplugin.platformVersion ?? 'Unknown platform version';
-      pushMessage = await _pushApi.receivedMessage("message") ?? 'Unknown push message';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-      pushMessage = 'Failed to get push message.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    _ourplugin = Ourplugin.fromProvider(DefaultAndroidProvider());
   }
 
 
@@ -56,22 +33,23 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
         body: Center(
             child:  StreamBuilder(
-              stream: Ourplugin(DefaultAndroidProvider).messageStream(),
+              stream: _ourplugin.pushApi.pushStream,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  AblyCompatibleMessage ablyMessage =  snapshot.data as AblyCompatibleMessage;
+                  String message =  snapshot.data as String;
                   return Text(
-                    ablyMessage.message,
+                    message,
                     style: TextStyle(color: Colors.white, fontSize: 24),
                   );
                 }
                 return Text(
-                  "No puah message",
+                  "No push message",
                   style: TextStyle(color: Colors.white, fontSize: 24),
                 );
               },
@@ -81,4 +59,5 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+
 }
